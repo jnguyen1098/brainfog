@@ -1,22 +1,18 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 #define MEMSIZE 500
-#define MAX_TOK 50000
+#define MAXTOKS 50000
+#define NUMTYPE unsigned short
 
 #define RED   "\x1B[31m"
 #define GRN   "\x1B[32m"
 #define RES   "\x1B[0m"
 
-#define LEGAL(x) (x == '>' || x == '<' || x == '+' || x == '-' || \
-                  x == '[' || x == ']' || x == '.' || x == ',')
-
-#define WRITE(x) (fputc(x, out))
 
 /* it's show time */
 int main(int argc, char *argv[])
 {
-    /* fps */
+    /* FPs */
     FILE *in, *out;
 
     /* args */
@@ -32,11 +28,12 @@ int main(int argc, char *argv[])
         return fprintf(stderr, RED"Could not write %s\n"RES, argv[1]), 3;
 
     /* tokenize */
-    unsigned short i = 0;
-    char c, tokens[MAX_TOK];
+    NUMTYPE i = 0;
+    char c, tokens[MAXTOKS];
     while ((c = fgetc(in)) != EOF)
-        if (LEGAL(c))
-            tokens[i++] = c;
+        if (c == '>' || c == '<' || c == '+' || c == '-' ||
+            c == '[' || c == ']' || c == '.' || c == ',')
+                tokens[i++] = c;
     tokens[i] = 0;
 
     /* initialize memory */
@@ -44,7 +41,7 @@ int main(int argc, char *argv[])
     char *ptr = memory;
 
     /* iterate */
-    for (unsigned short i = 0, bal = 0; tokens[i]; i++) {
+    for (NUMTYPE i = 0, bal = 0; tokens[i]; i++) {
         switch (tokens[i]) {
             case '>':
                 ptr++;
@@ -63,7 +60,7 @@ int main(int argc, char *argv[])
                 continue;
 
             case '.':
-                WRITE(*ptr);
+                fputc(*ptr, out);
                 continue;
 
             case ',':
@@ -75,7 +72,7 @@ int main(int argc, char *argv[])
             case '[':
                 if (!*ptr) {
                     bal = -1;
-                    while (tokens[++i] && bal != 0)
+                    while (bal != 0 && tokens[++i])
                         if (tokens[i] == '[') bal--;
                         else if (tokens[i] == ']' && !++bal)
                             break;
@@ -85,16 +82,12 @@ int main(int argc, char *argv[])
             case ']':
                 if (*ptr) {
                     bal = +1;
-                    while (--i >= 0 && bal != 0)
+                    while (bal != 0 && --i >= 0)
                         if (tokens[i] == ']') bal++;
                         else if (tokens[i] == '[' && !--bal)
                             break;
                 }
                 continue;
-
-            default:
-                continue;
-
         }
     }
 
