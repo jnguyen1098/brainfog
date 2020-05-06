@@ -1,14 +1,14 @@
 CC = clang
 CFLAGS = -Wall -Wpedantic -Wextra -ggdb
 
-run: cns
+run: fog
 	bash test_all.sh
 
-cns: cns.o
-	$(CC) $(CFLAGS) cns.o -o cns
+fog: fog.o
+	$(CC) $(CFLAGS) fog.o -o fog
 
-cns.o: 
-	$(CC) $(CFLAGS) -c cns.c -o cns.o
+fog.o: 
+	$(CC) $(CFLAGS) -c fog.c -o fog.o
 
 clean:
-	rm -rf cns.o cns tmp_output
+	rm -rf fog.o fog tmp_output
