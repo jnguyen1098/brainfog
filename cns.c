@@ -12,6 +12,8 @@
 #define LEGAL(x) (x == '>' || x == '<' || x == '+' || x == '-' || \
                   x == '.' || x == ',' || x == '[' || x == ']')
 
+#define WRITE(x) (fprintf(out, "%c", x))
+
 /* global file vars */
 FILE *in, *out;
 
@@ -21,27 +23,91 @@ char *tokenize(void);
 /* . . . */
 int main(int argc, char *argv[])
 {
+    /* args */
     if (argc != 3)
         return fprintf(stderr, RED"Usage: %s infile\n"RES, argv[0]), 1;
 
+    /* open infile for reading */
     if (!(in = fopen(argv[1], "r")))
         return fprintf(stderr, RED"Could not read %s\n"RES, argv[1]), 2;
 
+    /* open outfile for writing */
     if (!(out = fopen(argv[2], "w")))
         return fprintf(stderr, RED"Could not write %s\n"RES, argv[1]), 3;
 
+    /* tokenize */
     char *tokens;
     if (!(tokens = tokenize()))
         return fprintf(stderr, RED"Could not compile %s\n"RES, argv[1]), 4;
 
+    /* initialize memory */
+    char memory[3000] = { 0 };
+    char *ptr = memory;
+
+    /* iterate */
     for (int i = 0; tokens[i]; i++) {
-        putchar(tokens[i]);
+    int balance = 0;
+        switch (tokens[i]) {
+            case '>':
+                ptr++;
+                break;
+
+            case '<':
+                --ptr;
+                break;
+
+            case '+':
+                ++*ptr;
+                break;
+
+            case '-':
+                --*ptr;
+                break;
+
+            case '.':
+                WRITE(*ptr);
+                break;
+
+            case ',':
+                *ptr = getchar();
+                break;
+
+            case '[':
+                balance--;
+                if (*ptr) break;
+                while (tokens[++i] && balance != 0) {
+                    if (tokens[i] == ']') balance++;
+                    if (tokens[i] == '[') balance--;
+                }
+                if (balance != 0 && !tokens[i]) {
+                    fprintf(stderr, "Unterminated '['\n");
+                    abort();
+                }
+                break;
+
+            case ']':
+                balance++;
+                if (!*ptr) break;
+                while (--i >= 0 && balance != 0) {
+                    if (tokens[i] == ']') balance++;
+                    if (tokens[i] == '[') balance--;
+                }
+                if (balance != 0 && i < 0) {
+                    fprintf(stderr, "Unexpected ']'\n");
+                    abort();
+                }
+                break;
+
+            default:
+                fprintf(stderr, "%c definitely shouldn't have happened lol\n", tokens[i]);
+                abort();
+                break;
+        }
     }
-    puts("");
 
     fclose(in);
     fclose(out);
-    return puts(GRN"Completed compilation"RES), 0;
+    return puts(GRN"Completed."RES), 0;
 }
 
 char *tokenize(void)
