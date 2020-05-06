@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -Wall -Wpedantic -Wextra -ggdb
+CFLAGS = -Wall -Werror -Ofast -Wpedantic -Wextra -ggdb
 
 run: fog
 	bash test_all.sh
