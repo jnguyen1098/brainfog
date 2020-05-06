@@ -1,4 +1,4 @@
-# CNS
+# Brainfog
 This is my first attempt at a brainfuck interpreter. It's pretty messy atm.
 It can handle oobrain and towers of hanoi, two very large files from [here](https://github.com/fabianishere/brainfuck/tree/master/examples).
 
