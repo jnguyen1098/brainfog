@@ -46,7 +46,6 @@ int main(int argc, char *argv[])
 
     /* iterate */
     for (int i = 0; tokens[i]; i++) {
-    int balance = 0;
         switch (tokens[i]) {
             case '>':
                 ptr++;
@@ -70,38 +69,35 @@ int main(int argc, char *argv[])
 
             case ',':
                 *ptr = getchar();
+                if (*ptr == EOF || *ptr == '\r' || *ptr == '\n')
+                    *ptr = 0;
                 break;
 
-            case '[':
-                balance--;
+            case '[': {
+                int balance = -1;
                 if (*ptr) break;
-                while (tokens[++i] && balance != 0) {
+                i++;
+                while (tokens[i] && balance != 0) {
                     if (tokens[i] == ']') balance++;
                     if (tokens[i] == '[') balance--;
-                }
-                if (balance != 0 && !tokens[i]) {
-                    fprintf(stderr, "Unterminated '['\n");
-                    abort();
+                    if (tokens[i] == ']' && balance == 0) break;
+                    i++;
                 }
                 break;
+            }
 
-            case ']':
-                balance++;
+            case ']': {
+                int balance = +1;
                 if (!*ptr) break;
-                while (--i >= 0 && balance != 0) {
+                i--;
+                while (i >= 0 && balance != 0) {
                     if (tokens[i] == ']') balance++;
                     if (tokens[i] == '[') balance--;
-                }
-                if (balance != 0 && i < 0) {
-                    fprintf(stderr, "Unexpected ']'\n");
-                    abort();
+                    if (tokens[i] == '[' && balance == 0) break;
+                    i--;
                 }
                 break;
-
-            default:
-                fprintf(stderr, "%c definitely shouldn't have happened lol\n", tokens[i]);
-                abort();
-                break;
+            }
         }
     }
 

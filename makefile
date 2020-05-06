@@ -11,4 +11,4 @@ cns.o:
 	$(CC) $(CFLAGS) -c cns.c -o cns.o
 
 clean:
-	rm -rf cns.o cns
+	rm -rf cns.o cns tmp_output

@@ -5,6 +5,6 @@ do
     rm -rf tmp_output
     echo "Processing file $f..."
     ./cns $f tmp_output
-    diff tmp_output test/output/`basename $f`
+    cmp tmp_output test/output/`basename $f`
 done
 
