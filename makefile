@@ -1,14 +1,14 @@
 CC = gcc
 CFLAGS = -Wall -Ofast -Wpedantic -Wextra -ggdb
 
-run: fog
-	bash test_all.sh
+run: callosum
+	./callosum bottle1.bf output.c && gcc output.c && ./a.out > temp.txt && cmp temp.txt bottles.txt && rm a.out && vim output.c
 
-fog: fog.o
-	$(CC) $(CFLAGS) fog.o -o fog
+callosum: callosum.o
+	$(CC) $(CFLAGS) callosum.o -o callosum
 
-fog.o: 
-	$(CC) $(CFLAGS) -c fog.c -o fog.o
+callosum.o: 
+	$(CC) $(CFLAGS) -c callosum.c -o callosum.o
 
 clean:
-	rm -rf fog.o fog tmp_output
+	rm -rf callosum callosum.o
