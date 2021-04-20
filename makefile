@@ -11,4 +11,4 @@ callosum.o:
 	$(CC) $(CFLAGS) -c callosum.c -o callosum.o
 
 clean:
-	rm -rf callosum callosum.o
+	rm -rf callosum callosum.o output.c

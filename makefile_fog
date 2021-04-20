@@ -11,4 +11,4 @@ fog.o:
 	$(CC) $(CFLAGS) -c fog.c -o fog.o
 
 clean:
-	rm -rf fog.o fog tmp_output
+	rm -rf fog.o fog tmp_output output.c
